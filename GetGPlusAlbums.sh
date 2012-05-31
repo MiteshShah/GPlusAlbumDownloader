@@ -7,22 +7,28 @@
 # Copyright (C) 2012 by Mitesh Shah (Mr.Miteshah@gmail.com)
 # Speacial thanks to Daniel Sandman (revoltism@gmail.com)
 
+clear
 echo "For Latest Updates Follow Me On"
 echo "Google Plus: Http://gplus.to/iamroot"
+echo "====================================="
 
 #Enter First & Last Names
 read -p "Enter First Name: " FNAME
-read -p "Enter Last Name: " LNAME
+read -p "Enter Last Name:  " LNAME
+
+#Extra Spaces
+echo
+echo
 
 # Searching On Google For The Specified Names
 GID="`curl -A 'Mozilla/4.0' --silent "https://www.google.com/search?q=site%3Aplus.google.com%20$FNAME%20$LNAME" | grep -P -o '(?<=plus.google.com/)[^/u ]+(?=/)' | sed -n 1p`"
-echo $GID
+#echo $GID
 
 #We Don't Want To Appends Data
-rm albums
+rm albums &> /dev/null
 
 # Download The Album Page Of $FNAME $LNAME Person
-wget -c https://plus.google.com/photos/$GID/albums
+wget -qc https://plus.google.com/photos/$GID/albums
 
 #Sorting Album Page So We Only Get Album Names
 OPTIONS=$(sed -n '/\[1\,\[\,1\,\[\"https/p' albums | grep -P -o '(?<=/)[^/]+(?=\")' | sed 1d)
@@ -40,22 +46,30 @@ done
 
 #Get The URL Of Selected Album
 GPlusAlbum=$(sed -n "/$OPT/p" albums | awk -F ',' '{print $8}' | sed 's/"//g' | sed '/^$/d')
-echo $GPlusAlbum
+#echo $GPlusAlbum
 
 #Download Selected Album Contents
-wget -c $GPlusAlbum
+wget -qc $GPlusAlbum
+
+#Extra Spaces
+echo
+echo
 
 #GPlusID=$(echo $GPlusAlbum | cut -d'/' -f5)
 #echo $GPlusID
 GPlusAlbumName=$(sed '/data:/p' $(basename $GPlusAlbum) | grep -P -o "(?<=/)[^/]+(?=#)" | sort -u | grep -v "<" | grep -v "?")
-echo $GPlusAlbumName
+echo GPlus Album Name = $GPlusAlbumName
 
 #TargetDir=$(echo $GPlusID/$GPlusAlbumName)
 TargetDir=$(echo $FNAME$LNAME/$GPlusAlbumName)
-echo $TargetDir
+echo Target Directory = $TargetDir
+
+#Extra Spaces
+echo
+echo
 
 #Make TargetDir If Not Exist
-if [ ! "$(ls $TargetDir)" ]
+if [ ! "$(ls $TargetDir 2> /dev/null)" ]
 then
         mkdir -p $TargetDir
 fi
@@ -71,9 +85,8 @@ cat $(basename $GPlusAlbum) | grep png | cut -d'"' -f4 | grep -i jpeg >> /tmp/Mi
 
 #Download Starts
 cd $TargetDir
-wget -ci /tmp/MiteshShah.txt
+wget -ci /tmp/MiteshShah.txt #2> /dev/null
 
 #Remove Extra Unwanted Stuff
-cd -
+cd - &> /dev/null
 rm /tmp/MiteshShah.txt albums $(basename $GPlusAlbum)
-
