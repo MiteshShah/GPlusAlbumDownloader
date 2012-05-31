@@ -12,10 +12,15 @@ echo "===================================="
 
 echo "Enter Google Plus Album URL: "
 read GPlusAlbum
-echo $GPlusAlbum
+#echo $GPlusAlbum
+
 wget -c $GPlusAlbum
+
 rm /tmp/MiteshShah.txt &> /dev/null
+
 cat $(basename $GPlusAlbum) | grep jpg | cut -d'"' -f4 | grep jpg >> /tmp/MiteshShah.txt
 cat $(basename $GPlusAlbum) | grep png | cut -d'"' -f4 | grep png >> /tmp/MiteshShah.txt
+
 wget -ci /tmp/MiteshShah.txt
+
 rm /tmp/MiteshShah.txt $(basename $GPlusAlbum)
