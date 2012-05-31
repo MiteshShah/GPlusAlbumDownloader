@@ -41,5 +41,6 @@ cat $(basename $GPlusAlbum) | grep png | cut -d'"' -f4 | grep png >> /tmp/Mitesh
 cd $TargetDir
 wget -ci /tmp/MiteshShah.txt
 
+cd -
 rm /tmp/MiteshShah.txt $(basename $GPlusAlbum)
 
