@@ -45,9 +45,9 @@ echo $GPlusAlbum
 #Download Selected Album Contents
 wget -c $GPlusAlbum
 
-#GPlusID=$( echo $GPlusAlbum | cut -d'/' -f5 )
+#GPlusID=$(echo $GPlusAlbum | cut -d'/' -f5)
 #echo $GPlusID
-GPlusAlbumName=$( sed '/data:/p' $(basename $GPlusAlbum) | grep -P -o "(?<=/)[^/]+(?=#)" | sort -u | grep -v "<" | grep -v "?" )
+GPlusAlbumName=$(sed '/data:/p' $(basename $GPlusAlbum) | grep -P -o "(?<=/)[^/]+(?=#)" | sort -u | grep -v "<" | grep -v "?")
 echo $GPlusAlbumName
 
 #TargetDir=$(echo $GPlusID/$GPlusAlbumName)
