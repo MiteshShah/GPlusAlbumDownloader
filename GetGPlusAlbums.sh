@@ -39,7 +39,7 @@ do
 done
 
 #Get The URL Of Selected Album
-GPlusAlbum="`sed -n "/$OPT/p" albums | awk -F ',' '{print $8}' | sed 's/"//g' | sed '/^$/d'`"
+GPlusAlbum=$(sed -n "/$OPT/p" albums | awk -F ',' '{print $8}' | sed 's/"//g' | sed '/^$/d')
 echo $GPlusAlbum
 
 #Download Selected Album Contents
