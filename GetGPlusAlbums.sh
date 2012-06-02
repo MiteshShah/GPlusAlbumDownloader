@@ -11,18 +11,54 @@ clear
 echo "For Latest Updates Follow Me On"
 echo "Google Plus: Http://gplus.to/iamroot"
 echo "====================================="
-
-#Enter First & Last Names
-read -p "Enter First Name: " FNAME
-read -p "Enter Last Name:  " LNAME
+echo
+echo "Search Google Plus Profile via.."
+echo "1. First & Last Names"
+echo "2. Google Plus Profile ID"
+read -p "Enter Your Choice(1 or 2): " CHOICE
 
 #Extra Spaces
 echo
 echo
 
-# Searching On Google For The Specified Names
-GID="`curl -A 'Mozilla/4.0' --silent "https://www.google.com/search?q=site%3Aplus.google.com%20$FNAME%20$LNAME" | grep -P -o '(?<=plus.google.com/)[^/u ]+(?=/)' | sed -n 1p`"
-#echo $GID
+
+#Create A  FLNAME Function
+FLNAMES(){
+
+	#Enter First & Last Names
+	read -p "Enter First Name: " FNAME
+	read -p "Enter Last Name:  " LNAME
+
+	# Searching On Google For The Specified Names
+	GID="`curl -A 'Mozilla/4.0' --silent "https://www.google.com/search?q=site%3Aplus.google.com%20$FNAME%20$LNAME" | grep -P -o '(?<=plus.google.com/)[^/u ]+(?=/)' | sed -n 1p`"
+	#echo $GID
+
+}
+
+
+#Create A GPlusID Function
+GPLUSID(){
+
+	#Enter Google Plus ID
+	read -p "Enter 21 Digit Google Plus Profile ID: " GID
+	#echo $GID
+
+}
+
+
+#Checks Users Choice
+#And Call The Right Function
+if [ $CHOICE -eq 1 ]
+then
+	FLNAMES
+else
+	GPLUSID
+fi
+
+
+#Extra Spaces
+echo
+echo
 
 #We Don't Want To Appends Data
 rm albums &> /dev/null
@@ -44,6 +80,10 @@ do
 	esac
 done
 
+#Extra Spaces
+echo
+echo
+
 #Get The URL Of Selected Album
 GPlusAlbum=$(sed -n "/$OPT/p" albums | awk -F ',' '{print $8}' | sed 's/"//g' | sed '/^$/d')
 #echo $GPlusAlbum
@@ -51,18 +91,20 @@ GPlusAlbum=$(sed -n "/$OPT/p" albums | awk -F ',' '{print $8}' | sed 's/"//g' | 
 #Download Selected Album Contents
 wget -qc $GPlusAlbum
 
-#Extra Spaces
-echo
-echo
-
-#GPlusID=$(echo $GPlusAlbum | cut -d'/' -f5)
-#echo $GPlusID
 GPlusAlbumName=$(sed '/data:/p' $(basename $GPlusAlbum) | grep -P -o "(?<=/)[^/]+(?=#)" | sort -u | grep -v "<" | grep -v "?")
 echo GPlus Album Name = $GPlusAlbumName
 
-#TargetDir=$(echo $GPlusID/$GPlusAlbumName)
+#Generate FNAME & LNAME
+#If Users Choice IS 2
+if [ $CHOICE -eq 2 ]
+then
+	FNAME=$(sed '/data:/p' $(basename $GPlusAlbum) | grep -P -o "(?<=,,)[^/150,]+(?=,)" | grep -i [a-z] | sort -u | head -n1 | cut -d"\"" -f2 | cut -d" " -f1)
+	LNAME=$(sed '/data:/p' $(basename $GPlusAlbum) | grep -P -o "(?<=,,)[^/150,]+(?=,)" | grep -i [a-z] | sort -u | head -n1 | cut -d"\"" -f2 | cut -d" " -f2)
+fi
+
 TargetDir=$(echo $FNAME$LNAME/$GPlusAlbumName)
 echo Target Directory = $TargetDir
+
 
 #Extra Spaces
 echo
@@ -71,8 +113,9 @@ echo
 #Make TargetDir If Not Exist
 if [ ! "$(ls $TargetDir 2> /dev/null)" ]
 then
-        mkdir -p $TargetDir
+        mkdir -p "$TargetDir"
 fi
+
 
 #We Don't Want To Appends Data
 rm /tmp/MiteshShah.txt &> /dev/null
@@ -90,3 +133,4 @@ wget -ci /tmp/MiteshShah.txt #2> /dev/null
 #Remove Extra Unwanted Stuff
 cd - &> /dev/null
 rm /tmp/MiteshShah.txt albums $(basename $GPlusAlbum)
+clear
