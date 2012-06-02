@@ -95,7 +95,7 @@ GPlusAlbumName=$(sed '/data:/p' $(basename $GPlusAlbum) | grep -P -o "(?<=/)[^/]
 echo GPlus Album Name = $GPlusAlbumName
 
 #Generate FNAME & LNAME
-#If Users Choice IS 2
+#If Users Choice Is 2
 if [ $CHOICE -eq 2 ]
 then
 	FNAME=$(sed '/data:/p' $(basename $GPlusAlbum) | grep -P -o "(?<=,,)[^/150,]+(?=,)" | grep -i [a-z] | sort -u | head -n1 | cut -d"\"" -f2 | cut -d" " -f1)
