@@ -156,15 +156,14 @@ main(){
 
 	#Sorting Album Page So We Only Get Album Names
 	OPTIONS=$(sed -n '/\[1\,\[\,1\,\[\"https/p' $tmpDir/albums.html | grep -P -o '(?<=/)[^/]+(?=\")' | sed 1d)
-	echo $OPTIONS
-	sleep 1000
 	#Making Album Menu
+	echo "Use option 0 for downloading all albums"
 	select OPT in $OPTIONS;
 	do
-		case $OPT in
+		case $REPLY in
 		0)
 			echo "You selected every album"
-			for i in $(seq )
+			for i in $OPTIONS
 			do
 				downloadAlbum $i &
 			done
