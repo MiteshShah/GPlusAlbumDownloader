@@ -11,7 +11,8 @@
 #What If Someone Press CTRL+C While Script (wget) Is Running
 #The Scripts Quits Without Clenning Some Unwanted Stuffs
 #In Linux There Is One Nice Program Called Trap
-#The Trap Comamnd Helps The Scripts To Captures All The Specified Interrupt Signals And Then Call The Specified Commands Or Functions.
+#The Trap Comamnd Helps The Scripts To Captures All The Specified Interrupt Signals
+#And Then Call The Specified Commands Or Functions.
 
 #Trap Examples:
 #!/bin/bash
@@ -24,7 +25,9 @@
 #2. echo CTRL+C Pressed
 #3. exit 0
 
-#The Third Command Is Exit 0 So Program Is Quit If Remove Exit 0 Then Press CTRL+C Infinate Time Program Never Quits Or Wait 300 Sec To Finish Program As Specified In Read Command
+#The Third Command Is Exit 0 So Program Is Quit If Remove Exit 0
+#Then Press CTRL+C Infinate Time Program Never Quits Or
+#Wait 300 Sec To Finish Program As Specified In Read Command
 
 CleanStuff()
 {
@@ -55,7 +58,9 @@ FLNAMES()
 	read -p "Enter Last Name:  " LNAME
 
 	# Searching On Google For The Specified Names
-	GID="`curl -A 'Mozilla/4.0' --silent "https://www.google.com/search?q=site%3Aplus.google.com%20$FNAME%20$LNAME" | grep -P -o '(?<=plus.google.com/)[^/u ]+(?=/)' | sed -n 1p`" || OwnError "Get GID Failed :("
+	GID="`curl -A 'Mozilla/4.0' --silent \
+	"https://www.google.com/search?q=site%3Aplus.google.com%20$FNAME%20$LNAME" | \
+	grep -P -o '(?<=plus.google.com/)[^/u ]+(?=/)' | sed -n 1p`" || OwnError "Get GID Failed :("
 	#echo $GID
 }
 
@@ -142,8 +147,11 @@ GPlusAlbumURL=$(echo "$ALBUMS" | grep "\"$GPlusAlbumName\"" | awk -F ',' '{print
 #If Users Choice Is 2
 if [ $CHOICE -eq 2 ]
 then
-	FNAME=$(echo "$ALBUMS" | grep -P -o "(?<=,,)[^/150_,]+(?=,)" | grep -i [a-z] | sort -u | head -n1 | cut -d"\"" -f2 | cut -d" " -f1)
-	LNAME=$(echo "$ALBUMS" | grep -P -o "(?<=,,)[^/150_,]+(?=,)" | grep -i [a-z] | sort -u | head -n1 | cut -d"\"" -f2 | cut -d" " -f2)
+	FNAME=$(echo "$ALBUMS" | grep -P -o "(?<=,,)[^/150_,]+(?=,)" | \
+	grep -i [a-z] | sort -u | head -n1 | cut -d"\"" -f2 | cut -d" " -f1)
+	
+	LNAME=$(echo "$ALBUMS" | grep -P -o "(?<=,,)[^/150_,]+(?=,)" | \
+	grep -i [a-z] | sort -u | head -n1 | cut -d"\"" -f2 | cut -d" " -f2)
 fi
 
 #Modify $GPlusAlbumName
@@ -188,7 +196,8 @@ wget -qci /tmp/MiteshShah.txt
 
 #Why We Need If We Have CleanStuff Function?
 #The Trap Command Only Works If Someone Issue The Specified Signals (INT TERM QUIT ABRT KILL)
-#So If Script Does Not Reach This Line And Someone Pressed CTRL+C Then Trap Clean The Extra Unwanted Stuff First & Then Issue Exit 0 Command As Speciied In CleanStuff Functions
+#So If Script Does Not Reach This Line And Someone Pressed CTRL+C Then Trap Clean The Extra Unwanted Stuff First &
+#Then Issue Exit 0 Command As Speciied In CleanStuff Functions
 #But For Normal Running Scripts We Must Remove Extra Unwanted Stuff
 
 #Remove Extra Unwanted Stuff
