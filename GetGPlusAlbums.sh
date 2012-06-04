@@ -97,7 +97,7 @@ GPlusAlbumName=$(echo $OPT | sed 's/[^* ]*$//' | sed 's/[ \t]*$//')
 echo GPlus Album Name = $GPlusAlbumName
 
 #Get The URL Of Selected Album
-GPlusAlbumURL=$(echo "$ALBUMS" | grep "$GPlusAlbumName" | awk -F ',' '{print $8}' | sed 's/"//g' | sed '/^$/d')
+GPlusAlbumURL=$(echo "$ALBUMS" | grep "\"$GPlusAlbumName\"" | awk -F ',' '{print $8}' | sed 's/"//g' | sed '/^$/d')
 #echo GPlus Album URL = $GPlusAlbumURL
 
 
