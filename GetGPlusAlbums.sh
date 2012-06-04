@@ -7,6 +7,7 @@
 # Copyright (C) 2012 by Mitesh Shah (Mr.Miteshah@gmail.com)
 # Speacial thanks to Daniel Sandman (revoltism@gmail.com)
 
+
 clear
 echo "For Latest Updates Follow Me On"
 echo "Google Plus: Http://gplus.to/iamroot"
@@ -60,55 +61,68 @@ fi
 echo
 echo
 
-#We Don't Want To Appends Data
-rm albums &> /dev/null
 
-# Download The Album Page Of $FNAME $LNAME Person
-wget -qc https://plus.google.com/photos/$GID/albums
+# Download The Album Page Of $FNAME $LNAME Person & Save It To ALBUMS Variable
+ALBUMS=$(wget -qcO- https://plus.google.com/photos/$GID/albums)
+#echo $ALBUMS
 
-#Sorting Album Page So We Only Get Album Names
-OPTIONS=$(sed -n '/\[1\,\[\,1\,\[\"https/p' albums | grep -P -o '(?<=/)[^/]+(?=\")' | sed 1d)
+
+#Set Internal Field Separator IFS For New Line
+#It Is Useful To Make Album Menu
+IFS=$'\n'
+
+#Sorting Albums Veriable So We Only Get Albums Names & List The No Of Photos Inside The Albums
+OPTIONS=$(echo "$ALBUMS" | sed -n '/\/albums\//p' | awk -F "," '{print $2" [" $4"]"}' | sed 's/"//g')
+#echo $OPTIONS
 
 #Making Album Menu
 select OPT in $OPTIONS;
 do
 	case $OPT in
 	*)
-		echo "You Selected $OPT ($REPLY)"
+		echo "You Selected $REPLY) $OPT" 
 		break
 		;;
 	esac
 done
 
+
 #Extra Spaces
 echo
 echo
 
-#Get The URL Of Selected Album
-GPlusAlbum=$(sed -n "/$OPT/p" albums | awk -F ',' '{print $8}' | sed 's/"//g' | sed '/^$/d')
-#echo $GPlusAlbum
 
-#Download Selected Album Contents
-wget -qc $GPlusAlbum
-
-GPlusAlbumName=$(sed '/data:/p' $(basename $GPlusAlbum) | grep -P -o "(?<=/)[^/]+(?=#)" | sort -u | grep -v "<" | grep -v "?")
+#Now Get The Album Name From Just Removing Numbers From The $OPT
+GPlusAlbumName=$(echo $OPT | sed 's/[^* ]*$//' | sed 's/[ \t]*$//')
 echo GPlus Album Name = $GPlusAlbumName
+
+#Get The URL Of Selected Album
+GPlusAlbumURL=$(echo "$ALBUMS" | grep "$GPlusAlbumName" | awk -F ',' '{print $8}' | sed 's/"//g' | sed '/^$/d')
+#echo GPlus Album URL = $GPlusAlbumURL
+
 
 #Generate FNAME & LNAME
 #If Users Choice Is 2
 if [ $CHOICE -eq 2 ]
 then
-	FNAME=$(sed '/data:/p' $(basename $GPlusAlbum) | grep -P -o "(?<=,,)[^/150,]+(?=,)" | grep -i [a-z] | sort -u | head -n1 | cut -d"\"" -f2 | cut -d" " -f1)
-	LNAME=$(sed '/data:/p' $(basename $GPlusAlbum) | grep -P -o "(?<=,,)[^/150,]+(?=,)" | grep -i [a-z] | sort -u | head -n1 | cut -d"\"" -f2 | cut -d" " -f2)
+	FNAME=$(echo "$ALBUMS" | grep -P -o "(?<=,,)[^/150_,]+(?=,)" | grep -i [a-z] | sort -u | head -n1 | cut -d"\"" -f2 | cut -d" " -f1)
+	LNAME=$(echo "$ALBUMS" | grep -P -o "(?<=,,)[^/150_,]+(?=,)" | grep -i [a-z] | sort -u | head -n1 | cut -d"\"" -f2 | cut -d" " -f2)
 fi
+
+#Modify $GPlusAlbumName
+#Suppose $GPlusAlbumName="Why Linux/Ubuntu"
+#The Forward Slash Cause A Problem In Creating A Directory
+echo $GPlusAlbumName | grep /
+if [ $? -eq 0 ]
+then
+	#Now Replace Forward Slash With Single Space
+	#So Thats Looks Like "Why Linux Ubuntu" For Directory Creation
+	GPlusAlbumName=$(echo "$GPlusAlbumName" | sed 's|/| |')
+fi
+
 
 TargetDir=$(echo $FNAME$LNAME/$GPlusAlbumName)
 echo Target Directory = $TargetDir
-
-
-#Extra Spaces
-echo
-echo
 
 #Make TargetDir If Not Exist
 if [ ! "$(ls $TargetDir 2> /dev/null)" ]
@@ -117,20 +131,31 @@ then
 fi
 
 
-#We Don't Want To Appends Data
-rm /tmp/MiteshShah.txt &> /dev/null
+#Extra Spaces
+echo
+echo
+
+#Download Selected Album Contents
+GPlusAlbumData=$(wget -qcO- $GPlusAlbumURL)
 
 #Sorting Albums So We Only Get JPG PNG GIF & JPEG Images
-cat $(basename $GPlusAlbum) | grep jpg | cut -d'"' -f4 | grep -i jpg >> /tmp/MiteshShah.txt
-cat $(basename $GPlusAlbum) | grep png | cut -d'"' -f4 | grep -i png >> /tmp/MiteshShah.txt
-cat $(basename $GPlusAlbum) | grep png | cut -d'"' -f4 | grep -i gif >> /tmp/MiteshShah.txt
-cat $(basename $GPlusAlbum) | grep png | cut -d'"' -f4 | grep -i jpeg >> /tmp/MiteshShah.txt
+for IMAGES in [Jj][Pp][Gg] [Pp][Nn][Gg] [Gg][Ii][Ff] [Jj][Pp][Ee][Gg]
+do
+	echo "$GPlusAlbumData" | sed -n '/.*picasa.*.'$IMG'/p' | awk -F '"' '{print $4}' | grep "s0-d"
+done > /tmp/MiteshShah.txt
 
 #Download Starts
 cd $TargetDir
-wget -ci /tmp/MiteshShah.txt #2> /dev/null
+echo "Please Wait..."
+wget -qci /tmp/MiteshShah.txt
+
 
 #Remove Extra Unwanted Stuff
-cd - &> /dev/null
-rm /tmp/MiteshShah.txt albums $(basename $GPlusAlbum)
-clear
+rm /tmp/MiteshShah.txt
+
+#Finish Message
+echo "Done!!!!!"
+
+#Extra Spaces
+echo
+echo
