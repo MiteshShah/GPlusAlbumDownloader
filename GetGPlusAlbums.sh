@@ -35,7 +35,7 @@ CleanStuff()
 	then
 		rm /tmp/MiteshShah.txt
 		echo
-		echo File Removed Inside The CleanStuff Function
+		#echo File Removed Inside The CleanStuff Function
 	fi
 	exit 0
 }
@@ -192,7 +192,7 @@ done > /tmp/MiteshShah.txt
 #Download Starts
 cd $TargetDir
 echo "Please Wait..."
-wget -qci /tmp/MiteshShah.txt
+wget -qci /tmp/MiteshShah.txt || OwnError "Can't Downlaod Images Check Your Network Connections :("
 
 #Why We Need If We Have CleanStuff Function?
 #The Trap Command Only Works If Someone Issue The Specified Signals (INT TERM QUIT ABRT KILL)
@@ -202,10 +202,10 @@ wget -qci /tmp/MiteshShah.txt
 
 #Remove Extra Unwanted Stuff
 rm /tmp/MiteshShah.txt
-echo "File Removed As Normal..."
+#echo "File Removed As Normal..."
 
 #Finish Message
-echo "Done!!!!!"
+echo "Done!!!!!!!!!!!!!!!!!!!!"
 
 #Extra Spaces
 echo
