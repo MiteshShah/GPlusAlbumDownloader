@@ -38,6 +38,15 @@ CleanStuff()
 }
 trap "CleanStuff" INT TERM QUIT ABRT KILL
 
+#Handle Errors In Much Better Way
+#Generate Custome Errors Messages
+OwnError()
+{
+	#Redirect All STDIN 2 STDOUT
+	echo $@ >&2
+	exit 1
+}
+
 #Create A  FLNAME Function
 FLNAMES()
 {
@@ -46,7 +55,7 @@ FLNAMES()
 	read -p "Enter Last Name:  " LNAME
 
 	# Searching On Google For The Specified Names
-	GID="`curl -A 'Mozilla/4.0' --silent "https://www.google.com/search?q=site%3Aplus.google.com%20$FNAME%20$LNAME" | grep -P -o '(?<=plus.google.com/)[^/u ]+(?=/)' | sed -n 1p`"
+	GID="`curl -A 'Mozilla/4.0' --silent "https://www.google.com/search?q=site%3Aplus.google.com%20$FNAME%20$LNAME" | grep -P -o '(?<=plus.google.com/)[^/u ]+(?=/)' | sed -n 1p`" || OwnError "Get GID Failed :("
 	#echo $GID
 }
 
@@ -91,7 +100,7 @@ echo
 
 
 # Download The Album Page Of $FNAME $LNAME Person & Save It To ALBUMS Variable
-ALBUMS=$(wget -qcO- https://plus.google.com/photos/$GID/albums)
+ALBUMS=$(wget -qcO- https://plus.google.com/photos/$GID/albums) || OwnError "ALBUMS Not Found :("
 #echo $ALBUMS
 
 
@@ -164,7 +173,7 @@ echo
 echo
 
 #Download Selected Album Contents
-GPlusAlbumData=$(wget -qcO- $GPlusAlbumURL)
+GPlusAlbumData=$(wget -qcO- $GPlusAlbumURL) || OwnError "Unble To Fetch GPlusAlbumData :("
 
 #Sorting Albums So We Only Get JPG PNG GIF & JPEG Images
 for IMAGES in [Jj][Pp][Gg] [Pp][Nn][Gg] [Gg][Ii][Ff] [Jj][Pp][Ee][Gg]
