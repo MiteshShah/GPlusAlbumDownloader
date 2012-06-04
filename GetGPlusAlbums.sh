@@ -8,6 +8,58 @@
 # Speacial thanks to Daniel Sandman (revoltism@gmail.com)
 
 
+#What If Someone Press CTRL+C While Script (wget) Is Running
+#The Scripts Quits Without Clenning Some Unwanted Stuffs
+#In Linux There Is One Nice Program Called Trap
+#The Trap Comamnd Helps The Scripts To Captures All The Specified Interrupt Signals And Then Call The Specified Commands Or Functions.
+
+#Trap Examples:
+#!/bin/bash
+#trap "echo; echo CTRL+C Pressed; exit 0" INT
+#read -t 300 -p "I'm Sleeping For 300 Sec Hit CTRL+C To Exit"
+
+#In Above Trap Examples You Have To Wait For 300 Sec To Finish The Script Or Else Press CTRL+c
+#IF You Pressed CTRL+C Then Program Does Not Quits But Execute The Following Commands
+#1. echo
+#2. echo CTRL+C Pressed
+#3. exit 0
+
+#The Third Command Is Exit 0 So Program Is Quit If Remove Exit 0 Then Press CTRL+C Infinate Time Program Never Quits Or Wait 300 Sec To Finish Program As Specified In Read Command
+
+CleanStuff()
+{
+	if [ -e /tmp/MiteshShah.txt ]
+	then
+		rm /tmp/MiteshShah.txt
+		echo
+		echo File Removed Inside The CleanStuff Function
+	fi
+	exit 0
+}
+trap "CleanStuff" INT TERM QUIT ABRT KILL
+
+#Create A  FLNAME Function
+FLNAMES()
+{
+	#Enter First & Last Names
+	read -p "Enter First Name: " FNAME
+	read -p "Enter Last Name:  " LNAME
+
+	# Searching On Google For The Specified Names
+	GID="`curl -A 'Mozilla/4.0' --silent "https://www.google.com/search?q=site%3Aplus.google.com%20$FNAME%20$LNAME" | grep -P -o '(?<=plus.google.com/)[^/u ]+(?=/)' | sed -n 1p`"
+	#echo $GID
+}
+
+
+#Create A GPlusID Function
+GPLUSID()
+{
+	#Enter Google Plus ID
+	read -p "Enter 21 Digit Google Plus Profile ID: " GID
+	#echo $GID
+}
+
+
 clear
 echo "For Latest Updates Follow Me On"
 echo "Google Plus: Http://gplus.to/iamroot"
@@ -21,30 +73,6 @@ read -p "Enter Your Choice(1 or 2): " CHOICE
 #Extra Spaces
 echo
 echo
-
-
-#Create A  FLNAME Function
-FLNAMES(){
-
-	#Enter First & Last Names
-	read -p "Enter First Name: " FNAME
-	read -p "Enter Last Name:  " LNAME
-
-	# Searching On Google For The Specified Names
-	GID="`curl -A 'Mozilla/4.0' --silent "https://www.google.com/search?q=site%3Aplus.google.com%20$FNAME%20$LNAME" | grep -P -o '(?<=plus.google.com/)[^/u ]+(?=/)' | sed -n 1p`"
-	#echo $GID
-
-}
-
-
-#Create A GPlusID Function
-GPLUSID(){
-
-	#Enter Google Plus ID
-	read -p "Enter 21 Digit Google Plus Profile ID: " GID
-	#echo $GID
-
-}
 
 
 #Checks Users Choice
@@ -149,9 +177,14 @@ cd $TargetDir
 echo "Please Wait..."
 wget -qci /tmp/MiteshShah.txt
 
+#Why We Need If We Have CleanStuff Function?
+#The Trap Command Only Works If Someone Issue The Specified Signals (INT TERM QUIT ABRT KILL)
+#So If Script Does Not Reach This Line And Someone Pressed CTRL+C Then Trap Clean The Extra Unwanted Stuff First & Then Issue Exit 0 Command As Speciied In CleanStuff Functions
+#But For Normal Running Scripts We Must Remove Extra Unwanted Stuff
 
 #Remove Extra Unwanted Stuff
 rm /tmp/MiteshShah.txt
+echo "File Removed As Normal..."
 
 #Finish Message
 echo "Done!!!!!"
