@@ -191,7 +191,7 @@ done > /tmp/MiteshShah.txt
 
 #Download Starts
 cd $TargetDir
-echo "Please Wait..."
+echo "[+] Downlaoding Please Wait..."
 wget -qci /tmp/MiteshShah.txt || OwnError "Can't Downlaod Images Check Your Network Connections :("
 
 #Why We Need If We Have CleanStuff Function?
@@ -205,7 +205,7 @@ rm /tmp/MiteshShah.txt
 #echo "File Removed As Normal..."
 
 #Finish Message
-echo "Done!!!!!!!!!!!!!!!!!!!!"
+echo "[+] Done!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 
 #Extra Spaces
 echo
