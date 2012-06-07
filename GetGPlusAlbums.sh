@@ -5,12 +5,12 @@
 # (at your option) any later version.
 
 # Copyright (C) 2012 by Mitesh Shah (Mr.Miteshah@gmail.com)
-# Speacial thanks to Daniel Sandman (revoltism@gmail.com)
+# Speacial thanks to Daniel Sandman (revoltism@gmail.com) & JVApen
 
 
-#What If Someone Press CTRL+C While Script (wget) Is Running
+#What If Someone Press CTRL+C While Script Is Running
 #The Scripts Quits Without Clenning Some Unwanted Stuffs
-#In Linux There Is One Nice Program Called Trap
+#In Linux There Is One Nice Utility Called Trap
 #The Trap Comamnd Helps The Scripts To Captures All The Specified Interrupt Signals
 #And Then Call The Specified Commands Or Functions.
 
@@ -19,7 +19,11 @@
 #trap "echo; echo CTRL+C Pressed; exit 0" INT
 #read -t 300 -p "I'm Sleeping For 300 Sec Hit CTRL+C To Exit"
 
-#In Above Trap Examples You Have To Wait For 300 Sec To Finish The Script Or Else Press CTRL+c
+#In This Example Read Commands 
+#1. Take Some Input & Quits
+#2. Wait For 300 Sec For The  Input & Quits
+#3. Don't Want To Enter Some Input & If You Pressed CTRL+C To Make Program Quit Then
+
 #IF You Pressed CTRL+C Then Program Does Not Quits But Execute The Following Commands
 #1. echo
 #2. echo CTRL+C Pressed
@@ -37,9 +41,18 @@ CleanStuff()
 		echo
 		#echo File Removed Inside The CleanStuff Function
 	fi
+
+	#Unset Trap So We Don't Get Infinate Loop
+	trap - EXIT INT TERM QUIT ABRT KILL
+
+	#Flush File System Buffers
+	#More Details: info coreutils 'sync invocation'
+	sync
+
+	#Exit The Script
 	exit 0
 }
-trap "CleanStuff" INT TERM QUIT ABRT KILL
+trap "CleanStuff" EXIT INT TERM QUIT ABRT KILL
 
 #Handle Errors In Much Better Way
 #Generate Custome Errors Messages
@@ -194,15 +207,6 @@ cd $TargetDir
 echo "[+] Downlaoding Please Wait..."
 wget -qci /tmp/MiteshShah.txt || OwnError "Can't Downlaod Images Check Your Network Connections :("
 
-#Why We Need If We Have CleanStuff Function?
-#The Trap Command Only Works If Someone Issue The Specified Signals (INT TERM QUIT ABRT KILL)
-#So If Script Does Not Reach This Line And Someone Pressed CTRL+C Then Trap Clean The Extra Unwanted Stuff First &
-#Then Issue Exit 0 Command As Speciied In CleanStuff Functions
-#But For Normal Running Scripts We Must Remove Extra Unwanted Stuff
-
-#Remove Extra Unwanted Stuff
-rm /tmp/MiteshShah.txt
-#echo "File Removed As Normal..."
 
 #Finish Message
 echo "[+] Done!!!!!!!!!!!!!!!!!!!!!!!!!!!"
