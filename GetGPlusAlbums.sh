@@ -10,9 +10,13 @@
 
 #What If Someone Press CTRL+C While Script Is Running
 #The Scripts Quits Without Clenning Some Unwanted Stuffs
+
 #In Linux There Is One Nice Utility Called Trap
 #The Trap Comamnd Helps The Scripts To Captures All The Specified Interrupt Signals
-#And Then Call The Specified Commands Or Functions.
+#Except The SIGKILL (Signal 9) And Then Call The Specified Commands Or Functions.
+
+#NOTE: SIGKILL (Signal 9) Cann't Be Caught Or Ignored, Whether Via Trap Or Anything Else.
+#The Only Thing That Will Prevent SIGKILL From Killing The Process Is Holding Kernel Locks.﻿
 
 #Trap Examples:
 #!/bin/bash
