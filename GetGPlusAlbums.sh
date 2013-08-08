@@ -203,7 +203,7 @@ GPlusAlbumData=$(wget -qcO- $GPlusAlbumURL) || OwnError "Unble To Fetch GPlusAlb
 #Sorting Albums So We Only Get JPG PNG GIF & JPEG Images
 for IMAGES in [Jj][Pp][Gg] [Pp][Nn][Gg] [Gg][Ii][Ff] [Jj][Pp][Ee][Gg]
 do
-	echo "$GPlusAlbumData" | sed -n '/.*picasa.*.'$IMG'/p' | awk -F '"' '{print $4}' | grep "s0-d"
+	echo "$GPlusAlbumData" | tr -s ',' '\n' | grep http | grep $IMAGES | cut -d'"' -f2
 done > /tmp/MiteshShah.txt
 
 #Download Starts
